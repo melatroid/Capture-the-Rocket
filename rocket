@@ -1,0 +1,309 @@
+// DEVELOPER MELATROID
+// USE REPLIT OR GNU GCC COMPILER
+
+#include <iostream>
+#include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define BLK   "\x1B[30m"
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define YEL   "\x1B[33m"
+#define BLU   "\x1B[34m"
+#define MAG   "\x1B[35m"
+#define CYN   "\x1B[36m"
+#define WHT   "\x1B[37m"
+#define BOLD  "\x1B[1m"
+#define CLS   "\033[2J"
+#define BGBLK "\x1B[40m"
+#define BGRED "\x1B[41m"
+#define BGGRN "\x1B[42m"
+#define BGYEL "\x1B[43m"
+#define BGBLU "\x1B[44m"
+#define BGMAG "\x1B[45m"
+#define BGCYN "\x1B[46m"
+#define BGWHT "\x1B[47m"
+
+//using namespace std;
+
+int frc=0;
+int frc2=0;
+float quote=0;
+float quote2=0;
+int highscore=0;
+int kills= 0;
+int i,l;
+int pointerx=8; 
+int pointery=7;
+int enemiex=0;
+int enemiey;
+int zahlenwert;
+int enemievisual=0;
+int enemiemove;
+int autopilot=0;
+int simcount=0;
+int simact=0;
+int printquote=0;
+int enewin=0;
+char gamematrix [15] [10];
+char gamefigur = 'O';
+char keys;
+bool start=true;
+
+
+void enemiestart ();
+void enemie();
+void randxp() ;
+void randxm() ;
+void randyp() ;
+void randym();
+void generatedots ();
+void printx ();
+void printkill ();
+int motion ();
+
+
+int main() {
+srand((unsigned)time(NULL));
+  while (start == true)
+  {
+    enemiestart (); 
+    generatedots();
+    printx ();
+    motion ();
+    enemie ();
+    frc++;   //Counter
+    frc2++;  //Counter
+    printf(CLS);
+  }
+}  
+
+  //Randbegrenzungsschleife
+
+void randxp()  {if (pointerx==-1){pointerx=9;}}
+
+void randxm()  {if (pointerx>=9) {pointerx=9;}}
+
+void randyp()  {if (pointery==-1){pointery=14;}}
+
+void randym()  {if (pointery==15){pointery=0;}}
+
+void enemiestart () 
+{    if (enemievisual==0) //startposition für feind ermitteln 
+  {
+  enemievisual++;  
+  enemiey = rand() % 14 + 1; 
+  }
+}
+
+void enemie()
+{
+  if (enemiex>8) {enewin++; enemiex=0; enemievisual=0;} else {enemiex ++;} 
+  //Lasse den Feind nach unten wandern
+
+  
+  enemiemove = rand() % 4 + 1; //feind rückt zufällig nach l oder r
+  
+  switch (enemiemove)
+  {  //Randbegrenzungsschleife
+    case 1: enemiey--;if(enemiey==-1){enemiey=0;}  break; /*LEFT*/  
+    case 2: enemiey++;if(enemiey==15){enemiey=14;}  break; /*RIGHT*/
+    case 3: break;            /*DO NOTHING*/
+  }
+}
+
+int motion ()
+{
+  if (autopilot==0) 
+      {
+        printf (WHT"\n\n");  
+        scanf (" %c", &keys);  
+        if (keys=='p'){autopilot=1;kills=0;frc2=0;enewin=0;}  //Nur autopilot
+        if (keys=='o'){autopilot=1;simact=1;}
+      }  
+  else if (autopilot==1)//Autopilot
+  {     
+    if (!simact)
+      {
+      sleep(1);  //Zeit für Autopilot
+      }
+    else if 
+      (simact==1) //Simulation ausgewählt
+      {
+      simcount ++;
+        if (kills == 999) 
+        {autopilot=0;simcount=0; simact=0;} 
+      }
+    //simulator
+
+       if (pointery == enemiey) //wenn gegner vor dir steht
+      {
+        if      (pointerx > enemiex) keys = 'w'; // ist gegner vor dir
+        
+        else if (pointerx < enemiex) keys = 's'; // ist gegner hinter dir
+
+        if (pointerx == (enemiex+1)) keys = 's'; // gegner direkt vor dir
+      }
+      
+      else if (pointery < enemiey)// && pointerx != enemiex )  //wenn gegner Links 
+      {   
+        keys = 'd';
+        if (pointery == enemiey+1) pointerx--;
+      }
+     
+       else if (pointery > enemiey)// && pointerx != enemiex )//wenn gegner Rechts 
+      { 
+        keys = 'a';
+        if (pointery == enemiey-1) pointerx--;        
+      }
+
+    if (enemiex == pointerx) keys = 's'; // wenn gegner direkt neben dir
+    if (enemiex == pointerx) keys = 's'; // wenn gegner direkt neben dir
+    
+  }
+    switch (keys)
+    {
+      case 'w': pointerx--;   randxp(); break; /*UP*/
+      case 's': pointerx++;   randxm(); break; /*DOWN*/
+      case 'a': pointery--;   randyp(); break; /*LEFT*/  
+      case 'd': pointery++;   randym(); break; /*RIGHT*/
+      case 'f': break;             /*DO NOTHING*/
+    }  
+
+return ;
+}
+
+void generatedots ()
+{
+  //wenn der feind kontakt hat
+
+  int k=1; //nur einmal X printen
+  
+for (i=0;i<10;i++)
+  {
+    for (l=0;l<15;l++)
+    {
+      /*befülle alle objekte*/
+     //   printf("-");  
+      gamematrix[l][i] = ' ';
+      if (i==pointerx && l==pointery) 
+        {
+          //printf ("O") 
+          gamematrix[l][i] = 'O';  //Zeichne O
+        }
+      
+      if (i==enemiex && l==enemiey)
+      {
+        //printf ("V"); 
+        gamematrix[l][i] = 'V';  //Zeichne Y
+        //while (k<2){
+        if ((enemiey == pointery) && (enemiex == pointerx))
+          {  
+            gamematrix[l][i] = 'X';  //Zeichne X        
+            k++;
+          }
+      }
+    } 
+  }
+
+  int i;
+  if ((enemiey - pointery == 0) && (enemiex - pointerx == 0))
+  {
+    if (!simact) 
+    {
+   printf(RED"\n ,--. ,--.,--.,--.   ,--.    ");
+   printf(RED"\n |  .'   /|  ||  |   |  |    ");
+   printf(RED"\n |  .   ' |  ||  |   |  |    ");
+   printf(RED"\n |  |\\  \\ |  ||  '--.|  '--. ");
+   printf(RED"\n `--' '--'`--'`-----'`-----'\n\n\n");
+   printf(BLU"           ,~\n");
+   printf(RED"           ( O");   printf(YEL"> \n");
+   printf(WHT"           )(_ ///  \n");
+   printf(WHT"          ( \\_>/  \n");
+   printf(YEL"           \\__/    \n");
+   printf(RED"            ^^\n\n\n");
+  sleep(1);
+    printf (CLS);
+    }
+    pointery=8; pointerx=8;enemievisual=0;enemiex=0;
+    highscore = frc;frc=0;kills++;
+  }
+}
+
+void printx ()
+{       if (!simact) 
+    {      printf(BGBLK"");
+printf (MAG"\n\n  _    |-     _  |-|_ _     \n");
+printf    (" (_(||)|_L||`(/_ |_||(/_        \n");
+printf    ("     |                       \n");
+printf    ("           _|  _ |-         \n");
+printf    ("      |`()(_|<(/_|_      \n\n");
+printf    (GRN"\n           W ");
+printf    (GRN"\n         A S D ");
+printf    (GRN"\n     p for autopilot ");
+printf    (GRN"\n    o for ai-simulator ");  
+printf (WHT"\n\n  Topscore %d ",frc2);    
+//printf (BLU"  Highscore = %d",highscore); 
+
+  quote2 = ( (float)enewin)/(float)kills;
+printf (MAG"\n\n      Rocketwin 1/%g",quote2);
+      
+      printf (RED" \n\n Kills %d",kills);  
+quote = ((float)frc2/kills);
+      
+printf (BLU"\n\n        Playerwin 1/%g\n",quote); 
+
+      
+  for (i=0;i<10;i++)
+    { 
+    printf("\n");//Wichtig für Darstellung, Zeilenumbruch
+      if (i==0) //Optische RANDBEGRENZUNG OBEN  
+      {
+   //   printf (BGRED""); printf (BLK"<<<<<<<<><>>>>>>>"); printf (BGBLK"\n");
+        printf (WHT"\n<<<<<<<<><>>>>>>>");   printf (BGBLK"\n"); 
+      }
+    printf (BGCYN"");    
+    printf (WHT">");    //Optische RANDBEGRENZUNG LINKS  
+    printf (BGBLK"");
+    for (l=0;l<15;l++)
+      {
+        if (gamematrix[l][i]=='O') //wenn eintrag O
+          {              
+              printf (BGBLU""); 
+              printf (BLK"%c",gamematrix[l][i]);
+              printf (BGBLK"");             
+          } 
+          else if (gamematrix[l][i]=='V') //wenn eintrag V
+            {
+              printf (BGRED"");  
+              printf (BLK"%c",gamematrix[l][i]);  
+              printf (BGBLK"");  
+            }
+          else if (gamematrix[l][i]=='X') //wenn Kontakt X
+            {
+              printf (BGBLK"");                
+              printf (RED"%c",gamematrix[l][i]);
+              printf (BGBLK""); 
+            }
+          else
+            {         
+              printf (GRN"%c",gamematrix[l][i]);         
+            } 
+          
+        if (l==14)//Optische RANDBEGRENZUNG RECHTS  
+          {
+            printf (BGCYN"");  
+            printf (WHT"<");             
+            printf (BGBLK""); 
+          }
+      }
+    }      
+  } 
+
+  if (!simact)
+  {
+  printf (WHT"\n<<<<<<<<><>>>>>>>");   printf (BGBLK"\n\n\n\n"); 
+  }
+  }
+
