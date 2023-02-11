@@ -1,4 +1,4 @@
 # Capture-the-Rocket
-a little console test game created in C - GNU Compiler, have fun
+a little console game created in C - GNU Compiler, have fun
 
-for best result use www.replit.com
+for best result use c/c++-compiler www.replit.com
